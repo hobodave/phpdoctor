@@ -89,7 +89,7 @@ class PackageDoc extends Doc
 	 */
 	function asPath()
     {
-		return strtolower(str_replace('.', '/', str_replace('\\', '/', $this->_name)));
+		return strtolower(str_replace('\\', '/', $this->_name));
 	}
 	
 	/** Calculate the depth of this package from the root.

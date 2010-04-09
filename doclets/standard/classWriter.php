@@ -49,7 +49,7 @@ class ClassWriter extends HTMLWriter
 		foreach ($packages as $packageName => $package) {
 
 			$this->_sections[0] = array('title' => 'Overview', 'url' => 'overview-summary.html');
-			$this->_sections[1] = array('title' => 'Package', 'url' => $package->asPath().'/package-summary.html');
+			$this->_sections[1] = array('title' => 'Namespace', 'url' => $package->asPath().'/package-summary.html');
 			$this->_sections[2] = array('title' => 'Class', 'selected' => TRUE);
 			//$this->_sections[3] = array('title' => 'Use');
 			if ($phpdoctor->getOption('tree')) $this->_sections[4] = array('title' => 'Tree', 'url' => $package->asPath().'/package-tree.html');
@@ -291,13 +291,15 @@ class ClassWriter extends HTMLWriter
 				$depth = ++$result[1];
 			} else {
 				$output .= $class->superclass().'<br>';
-				$output .= str_repeat('   ', $depth).' └─';
+				//$output .= str_repeat('   ', $depth).' └─';
+				$output .= str_repeat('   ', $depth) . '&lfloor;&nbsp;';
 				$depth++;
 				$undefinedClass = TRUE;
 			}
 		}
 		if ($depth > 0 && !$undefinedClass) {
-			$output .= str_repeat('   ', $depth).' └─';
+			//$output .= str_repeat('   ', $depth).' └─';
+			$output .= str_repeat('   ', $depth) . '&lfloor;&nbsp;';
 		}
 		if ($start) {
 			$output .= '<strong>'.$class->name().'</strong><br />';

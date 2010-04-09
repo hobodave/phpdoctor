@@ -108,6 +108,7 @@ class ProgramElementDoc extends Doc
 	/** Get the package that this program element is contained in.
 	 *
 	 * @return PackageDoc
+	 * @todo Rename: containingNamespace
 	 */
 	function containingPackage()
     {
@@ -135,9 +136,9 @@ for the method bar() in class Foo in the package Baz, return:
     {
 		$parent = $this->containingClass();
 		if ($parent && $parent->name() != '' && $this->_package != $parent->name()) {
-			return $this->_package.'.'.$parent->name().'.'.$this->_name;
+			return $this->_package.'\\'.$parent->name().'\\'.$this->_name;
 		} else {
-			return $this->_package.'.'.$this->_name;
+			return $this->_package.'\\'.$this->_name;
 		}
 	}
 

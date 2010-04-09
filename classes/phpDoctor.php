@@ -515,6 +515,7 @@ class PHPDoctor
 					then merged into the objects data fields upon object completion. */
 					$currentData = array();
 					
+					//TODO: Rename: $currentNamespace
 					$currentPackage = $this->_defaultPackage; // the current package
 					$currentElement = array(); // stack of element family, current at top of stack
 					$ce = $rootDoc; // reference to element at top of stack
@@ -658,11 +659,10 @@ class PHPDoctor
 							    $namespace = '';
     							while($tokens[++$key] != ';') {
     								if ($tokens[$key][0] == T_STRING) {
-    								    if ($namespace != '') $namespace .= '.';
+    								    if ($namespace != '') $namespace .= '\\';
     									$namespace .= $tokens[$key][1];
     								}
     							}
-							    //$currentData['package'] = $namespace;
 							    $currentPackage = $namespace;
 							    break;
                                 

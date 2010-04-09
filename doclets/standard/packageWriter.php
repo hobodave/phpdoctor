@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @package PHPDoctor.Doclets.Standard
  * @version $Revision: 1.15 $
+ * @todo Rename: NamespaceWriter
  */
 class PackageWriter extends HTMLWriter
 {
@@ -45,7 +46,7 @@ class PackageWriter extends HTMLWriter
 		
 		if ($displayTree) {
 			$this->_sections[0] = array('title' => 'Overview', 'url' => 'overview-summary.html');
-			$this->_sections[1] = array('title' => 'Package');
+			$this->_sections[1] = array('title' => 'Namespace');
 			$this->_sections[2] = array('title' => 'Class');
 			//$this->_sections[3] = array('title' => 'Use');
 			$this->_sections[4] = array('title' => 'Tree', 'selected' => TRUE);
@@ -84,7 +85,7 @@ class PackageWriter extends HTMLWriter
 			$this->_depth = $package->depth() + 1;
 
 			$this->_sections[0] = array('title' => 'Overview', 'url' => 'overview-summary.html');
-			$this->_sections[1] = array('title' => 'Package', 'selected' => TRUE);
+			$this->_sections[1] = array('title' => 'Namespace', 'selected' => TRUE);
 			$this->_sections[2] = array('title' => 'Class');
 			//$this->_sections[3] = array('title' => 'Use');
 			if ($displayTree) $this->_sections[4] = array('title' => 'Tree', 'url' => $package->asPath().'/package-tree.html');
@@ -95,7 +96,7 @@ class PackageWriter extends HTMLWriter
 			
 			echo "<hr>\n\n";
 		
-			echo '<h1>Package ', $package->name(), "</h1>\n\n";
+			echo '<h1>Namespace ', $package->name(), "</h1>\n\n";
 
 			$textTag =& $package->tags('@text');
 			if ($textTag) {
@@ -194,7 +195,7 @@ class PackageWriter extends HTMLWriter
 			if ($displayTree) {
 			
 				$this->_sections[0] = array('title' => 'Overview', 'url' => 'overview-summary.html');
-				$this->_sections[1] = array('title' => 'Package', 'url' => $package->asPath().'/package-summary.html', 'relative' => TRUE);
+				$this->_sections[1] = array('title' => 'Namespace', 'url' => $package->asPath().'/package-summary.html', 'relative' => TRUE);
 				$this->_sections[2] = array('title' => 'Class');
 				//$this->_sections[3] = array('title' => 'Use');
 				$this->_sections[4] = array('title' => 'Tree', 'url' => $package->asPath().'/package-tree.html', 'selected' => TRUE, 'relative' => TRUE);

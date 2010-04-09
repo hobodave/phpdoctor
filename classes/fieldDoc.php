@@ -108,7 +108,7 @@ class FieldDoc extends ProgramElementDoc
 		$myPackage = $this->containingPackage();
 		$classDoc = $this->_type->asClassDoc();
 		if ($classDoc) {
-			$packageDoc =& $classDoc->containingPackage();
+			$packageDoc = $classDoc->containingPackage();
 			return '<a href="'.str_repeat('../', $myPackage->depth() + 1).$classDoc->asPath().'">'.$classDoc->name().$this->_type->dimension().'</a>';
 		} else {
 			return $this->_type->typeName().$this->_type->dimension();
