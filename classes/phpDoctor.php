@@ -494,10 +494,9 @@ class PHPDoctor
 	 *
 	 * @return RootDoc
 	 */
-	function &parse()
+	function parse()
     {
-
-		$rootDoc =& new rootDoc($this);
+		$rootDoc = new rootDoc($this);
 
 		foreach ($this->_files as $filename) {
 			if ($filename) {
@@ -518,7 +517,7 @@ class PHPDoctor
 					
 					$currentPackage = $this->_defaultPackage; // the current package
 					$currentElement = array(); // stack of element family, current at top of stack
-					$ce =& $rootDoc; // reference to element at top of stack
+					$ce = $rootDoc; // reference to element at top of stack
 					
 					$open_curly_braces = FALSE;
 					$in_parsed_string = FALSE;
@@ -541,7 +540,7 @@ class PHPDoctor
 							
 							case T_CLASS:
 							// read class
-								$class =& new classDoc($this->_getNext($tokens, $key, T_STRING), $rootDoc, $filename, $lineNumber); // create class object
+								$class = new classDoc($this->_getNext($tokens, $key, T_STRING), $rootDoc, $filename, $lineNumber); // create class object
 								$this->verbose('+ Entering '.get_class($class).': '.$class->name());
 								if (isset($currentData['docComment'])) { // set doc comment
 									$class->set('docComment', $currentData['docComment']);
@@ -552,19 +551,21 @@ class PHPDoctor
 								} else {
 									$class->set('package', $currentPackage);
 								}
-								$parentPackage =& $rootDoc->packageNamed($class->packageName(), TRUE); // get parent package
+
+								//$class->set('package', ...);
+								$parentPackage = $rootDoc->packageNamed($class->packageName(), TRUE); // get parent package
 								$parentPackage->addClass($class); // add class to package
 								$class->setByRef('parent', $parentPackage); // set parent reference
 								$currentData = array(); // empty data store
 								if ($this->_includeElements($class)) {
-									$currentElement[count($currentElement)] =& $class; // re-assign current element
+									$currentElement[count($currentElement)] = $class; // re-assign current element
 								}
-								$ce =& $class;
+								$ce = $class;
 								break;
 								
 							case T_INTERFACE:
 							// read interface
-								$interface =& new classDoc($this->_getNext($tokens, $key, T_STRING), $rootDoc, $filename, $lineNumber); // create interface object
+								$interface = new classDoc($this->_getNext($tokens, $key, T_STRING), $rootDoc, $filename, $lineNumber); // create interface object
 								$this->verbose('+ Entering '.get_class($interface).': '.$interface->name());
 								if (isset($currentData['docComment'])) { // set doc comment
 									$interface->set('docComment', $currentData['docComment']);
@@ -576,21 +577,24 @@ class PHPDoctor
 								} else {
 									$interface->set('package', $currentPackage);
 								}
-								$parentPackage =& $rootDoc->packageNamed($interface->packageName(), TRUE); // get parent package
+								$parentPackage = $rootDoc->packageNamed($interface->packageName(), TRUE); // get parent package
 								$parentPackage->addClass($interface); // add class to package
 								$interface->setByRef('parent', $parentPackage); // set parent reference
 								$currentData = array(); // empty data store
 								if ($this->_includeElements($interface)) {
-									$currentElement[count($currentElement)] =& $interface; // re-assign current element
+									$currentElement[count($currentElement)] = $interface; // re-assign current element
 								}
-								$ce =& $interface;
+								$ce = $interface;
 								break;
 	
 							case T_EXTENDS:
 							// get extends clause
 								$superClassName = $this->_getNext($tokens, $key, T_STRING);
-								$ce->set('superclass', $superClassName);
-								if ($superClass =& $rootDoc->classNamed($superClassName) && $commentTag =& $superClass->tags('@text')) {
+								//FIXME: For some reason Exception extends Exception extends Exception ...
+								if ($superClassName && $ce->name() != $superClassName) {
+								    $ce->set('superclass', $superClassName);
+								}
+								if (($superClass = $rootDoc->classNamed($superClassName)) != null && $commentTag = $superClass->tags('@text')) {
 									$ce->setTag('@text', $commentTag);
 								}
 								break;
@@ -599,7 +603,7 @@ class PHPDoctor
 							// get implements clause
 								while($tokens[++$key] != '{') {
 									if ($tokens[$key][0] == T_STRING) {
-										$interface =& $rootDoc->classNamed($tokens[$key][1]);
+										$interface = $rootDoc->classNamed($tokens[$key][1]);
 										if ($interface) {
 											$ce->set('interfaces', $interface);
 										}
@@ -610,7 +614,7 @@ class PHPDoctor
 							case T_THROW:
 							// throws exception
 								$className = $this->_getNext($tokens, $key, T_STRING);
-								$class =& $rootDoc->classNamed($className);
+								$class = $rootDoc->classNamed($className);
 								if ($class) {
 									$ce->setByRef('throws', $class);
 								} else {
@@ -649,10 +653,22 @@ class PHPDoctor
 							case T_CONST:
 								$currentData['var'] = 'const';
 								break;
+								
+							case T_NAMESPACE:
+							    $namespace = '';
+    							while($tokens[++$key] != ';') {
+    								if ($tokens[$key][0] == T_STRING) {
+    								    if ($namespace != '') $namespace .= '.';
+    									$namespace .= $tokens[$key][1];
+    								}
+    							}
+							    //$currentData['package'] = $namespace;
+							    $currentPackage = $namespace;
+							    break;
                                 
 							case T_FUNCTION:
 							// read function
-								$method =& new methodDoc($this->_getNext($tokens, $key, T_STRING), $ce, $rootDoc, $filename, $lineNumber); // create method object
+								$method = new methodDoc($this->_getNext($tokens, $key, T_STRING), $ce, $rootDoc, $filename, $lineNumber); // create method object
 								$this->verbose('+ Entering '.get_class($method).': '.$method->name());
 								if (isset($currentData['docComment'])) { // set doc comment
 									$method->set('docComment', $currentData['docComment']); // set doc comment
@@ -667,7 +683,7 @@ class PHPDoctor
 									} else {
 										$method->set('package', $currentPackage);
 									}
-									$parentPackage =& $rootDoc->packageNamed($method->packageName(), TRUE); // get parent package
+									$parentPackage = $rootDoc->packageNamed($method->packageName(), TRUE); // get parent package
                                     if ($this->_includeElements($method)) {
                                         $parentPackage->addFunction($method); // add method to package
                                     }
@@ -688,14 +704,14 @@ class PHPDoctor
 									}
 								}
 								$currentData = array(); // empty data store
-								$currentElement[count($currentElement)] =& $method; // re-assign current element
-								$ce =& $method;
+								$currentElement[count($currentElement)] = $method; // re-assign current element
+								$ce = $method;
 								break;
 	
 							case T_STRING:
 							// read global constant
                                 if ($token[1] == 'define') {// && $tokens[$key + 2][0] == T_CONSTANT_ENCAPSED_STRING) {
-									$const =& new fieldDoc($this->_getNext($tokens, $key, T_CONSTANT_ENCAPSED_STRING), $ce, $rootDoc, $filename, $lineNumber); // create constant object
+									$const = new fieldDoc($this->_getNext($tokens, $key, T_CONSTANT_ENCAPSED_STRING), $ce, $rootDoc, $filename, $lineNumber); // create constant object
 									$this->verbose('Found '.get_class($const).': global constant '.$const->name());
 									$const->set('final', TRUE); // is constant
 									$value = '';
@@ -735,7 +751,7 @@ class PHPDoctor
 										$const->set('package', $currentPackage);
 									}
 									$const->mergeData();
-									$parentPackage =& $rootDoc->packageNamed($const->packageName(), TRUE); // get parent package
+									$parentPackage = $rootDoc->packageNamed($const->packageName(), TRUE); // get parent package
 									if ($this->_includeElements($const)) {
 										$parentPackage->addGlobal($const); // add constant to package
 									}
@@ -758,7 +774,7 @@ class PHPDoctor
 											if (!isset($name)) {
 												$name = $this->_getPrev($tokens, $key, array(T_VARIABLE, T_STRING));
 											}
-											$const =& new fieldDoc($name, $ce, $rootDoc, $filename, $lineNumber); // create field object
+											$const = new fieldDoc($name, $ce, $rootDoc, $filename, $lineNumber); // create field object
 											$this->verbose('Found '.get_class($const).': '.$const->name());
 											if ($this->_hasPrivateName($const->name())) $const->makePrivate();
 											$const->set('final', TRUE);
@@ -801,7 +817,7 @@ class PHPDoctor
 											unset($param);
 										} elseif (is_array($tokens[$key])) {
 											if ($tokens[$key][0] == T_VARIABLE && !isset($param)) {
-												$param =& new fieldDoc($tokens[$key][1], $ce, $rootDoc, $filename, $lineNumber); // create constant object
+												$param = new fieldDoc($tokens[$key][1], $ce, $rootDoc, $filename, $lineNumber); // create constant object
 												$this->verbose('Found '.get_class($param).': '.$param->name());
 												if (isset($currentData['docComment'])) { // set doc comment
 													$param->set('docComment', $currentData['docComment']);
@@ -823,7 +839,7 @@ class PHPDoctor
 							case T_VARIABLE:
 								// read global variable
 								if (strtolower(get_class($ce)) == 'rootdoc') { // global var, add to package
-									$global =& new fieldDoc($tokens[$key][1], $ce, $rootDoc, $filename, $lineNumber); // create constant object
+									$global = new fieldDoc($tokens[$key][1], $ce, $rootDoc, $filename, $lineNumber); // create constant object
 									$this->verbose('Found '.get_class($global).': global variable '.$global->name());
 									if (isset($tokens[$key - 1][0]) && isset($tokens[$key - 2][0]) && $tokens[$key - 2][0] == T_STRING && $tokens[$key - 1][0] == T_WHITESPACE) {
 										$global->set('type', new type($tokens[$key - 2][1], $rootDoc));
@@ -854,7 +870,7 @@ class PHPDoctor
 										$global->set('package', $currentPackage);
 									}
 									$global->mergeData();
-									$parentPackage =& $rootDoc->packageNamed($global->packageName(), TRUE); // get parent package
+									$parentPackage = $rootDoc->packageNamed($global->packageName(), TRUE); // get parent package
 									if ($this->_includeElements($global)) {
 										$parentPackage->addGlobal($global); // add constant to package
 									}
@@ -886,7 +902,7 @@ class PHPDoctor
 											if (!isset($name)) {
 												$name = $this->_getPrev($tokens, $key, T_VARIABLE);
 											}
-											$field =& new fieldDoc($name, $ce, $rootDoc, $filename, $lineNumber); // create field object
+											$field = new fieldDoc($name, $ce, $rootDoc, $filename, $lineNumber); // create field object
 											$this->verbose('Found '.get_class($field).': '.$field->name());
 											if ($this->_hasPrivateName($field->name())) $field->makePrivate();
 											if (isset($value)) { // set value
@@ -919,6 +935,7 @@ class PHPDoctor
 							case T_DOLLAR_OPEN_CURLY_BRACES: // we must catch this so we don't accidently step out of the current block
 								$open_curly_braces = TRUE;
 								break;
+							
 							}
 	
 						} else { // primitive tokens
@@ -940,10 +957,10 @@ class PHPDoctor
 											$this->verbose('- Leaving '.get_class($ce).': '.$ce->name());
 											array_pop($currentElement); // re-assign current element
 											if (count($currentElement) > 0) {
-												$ce =& $currentElement[count($currentElement) - 1];
+												$ce = $currentElement[count($currentElement) - 1];
 											} else {
 												unset($ce);
-												$ce =& $rootDoc;
+												$ce = $rootDoc;
 											}
 										}
 									}
@@ -955,10 +972,10 @@ class PHPDoctor
 									$this->verbose('- Leaving empty '.get_class($ce).': '.$ce->name());
 									array_pop($currentElement); // re-assign current element
 									if (count($currentElement) > 0) {
-										$ce =& $currentElement[count($currentElement) - 1];
+										$ce = $currentElement[count($currentElement) - 1];
 									} else {
 										unset($ce);
-										$ce =& $rootDoc;
+										$ce = $rootDoc;
 									}
 								}
 								break;
@@ -995,13 +1012,13 @@ class PHPDoctor
 	 * @param RootDoc rootDoc
 	 * @return bool
 	 */
-	function execute(&$rootDoc)
+	function execute(RootDoc $rootDoc)
     {
 		$docletFile = $this->fixPath($this->_docletPath).$this->_doclet.'/'.$this->_doclet.'.php';
 		if (is_file($docletFile)) { // load doclet
 			$this->message('Loading doclet "'.$this->_doclet.'"');
 			require_once($docletFile);
-			$doclet =& new $this->_doclet($rootDoc);
+			$doclet = new $this->_doclet($rootDoc);
 		} else {
 			$this->error('Could not find doclet "'.$docletFile.'"');
 		}
@@ -1012,7 +1029,7 @@ class PHPDoctor
      * @param rootDoc rootDoc
      * @param str parent
      */
-    function _mergeSuperClassData(&$rootDoc, $parent = NULL)
+    function _mergeSuperClassData(RootDoc $rootDoc, $parent = NULL)
     {
         $classes =& $rootDoc->classes();
         foreach ($classes as $name => $class) {
@@ -1091,7 +1108,7 @@ class PHPDoctor
 	 * @param RootDoc root The root object
 	 * @return mixed[] Array of doc comment data
 	 */
-	function processDocComment($comment, &$root)
+	function processDocComment($comment, RootDoc $root)
     {
 		if (substr(trim($comment), 0, 3) != '/**') return FALSE; // not doc comment, abort
         
@@ -1124,7 +1141,7 @@ class PHPDoctor
 			if ($name) {
 				switch ($name) {
 				case 'package': // place current element in package
-					$data['package'] = $text;
+				//	$data['package'] = $text;
 					break;
 				case 'var': // set variable type
 					$data['type'] = $text;
@@ -1150,7 +1167,7 @@ class PHPDoctor
 							$data['tags'][$name] = array($data['tags'][$name], $this->createTag($name, $text, $data, $root));
 						}
 					} else {
-						$data['tags'][$name] =& $this->createTag($name, $text, $data, $root);
+						$data['tags'][$name] = $this->createTag($name, $text, $data, $root);
 					}
 				}
 			}
@@ -1170,24 +1187,24 @@ class PHPDoctor
 	 * @param RootDoc root The root object
 	 * @return Tag
 	 */
-	function &createTag($name, $text, &$data, &$root)
+	function createTag($name, $text, &$data, RootDoc $root)
     {
 		$class = substr($name, 1);
 		if ($class) {
 			$tagletFile = $this->makeAbsolutePath($this->fixPath($this->_tagletPath).substr($name, 1).'.php', $this->_path);
 			if (is_file($tagletFile)) { // load taglet for this tag
 				if (!class_exists($class)) require_once($tagletFile);
-				$tag =& new $class($name, $text, $root);
+				$tag = new $class($name, $text, $root);
 				return $tag;
 			} else {
 			    $tagFile = $this->makeAbsolutePath('classes/'.$class.'Tag.php', $this->_path);
 				if (is_file($tagFile)) { // load class for this tag
 					$class .= 'Tag';
 					if (!class_exists($class)) require_once($tagFile);
-					$tag =& new $class($text, $data, $root);
+					$tag = new $class($text, $data, $root);
 					return $tag;
 				} else { // create standard tag
-					$tag =& new tag($name, $text, $root);
+					$tag = new tag($name, $text, $root);
 					return $tag;
 				}
 			}
@@ -1201,7 +1218,7 @@ class PHPDoctor
 	 * @param ProgramElementDoc element The element to check
 	 * @return bool
 	 */
-	function _includeElements(&$element)
+	function _includeElements(ProgramElementDoc $element)
     {
 		if ($element->isGlobal() && !$element->isFinal() && !$this->_globals) {
 			return FALSE;
@@ -1232,4 +1249,4 @@ class PHPDoctor
 	}
 }
 
-?>
+

@@ -234,12 +234,12 @@ class PackageWriter extends HTMLWriter
 	 * @param ClassDoc[] tree
 	 * @param ClassDoc element
 	 */
-	function _buildTree(&$tree, &$element)
+	function _buildTree(array &$tree, ClassDoc $element)
     {
 		$tree[$element->name()] = $element;
 		if ($element->superclass()) {
-			$rootDoc =& $this->_doclet->rootDoc();
-            $superclass =& $rootDoc->classNamed($element->superclass());
+			$rootDoc = $this->_doclet->rootDoc();
+            $superclass = $rootDoc->classNamed($element->superclass());
             if ($superclass) {
                 $this->_buildTree($tree, $superclass);
             }

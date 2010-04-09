@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * @package PHPDoctor
  * @version $Revision: 1.12 $
+ * @todo Rename: NamespaceDoc
  */
 class PackageDoc extends Doc
 {
@@ -107,14 +108,14 @@ class PackageDoc extends Doc
 	 *
 	 * @param ClassDoc class
 	 */
-	function addClass(&$class)
+	function addClass(ClassDoc $class)
     {
         if (isset($this->_classes[$class->name()])) {
-            $phpdoctor =& $this->_root->phpdoctor();
+            $phpdoctor = $this->_root->phpdoctor();
             echo "\n";
             $phpdoctor->warning('Found class '.$class->name().' again, overwriting previous version');
         }
-		$this->_classes[$class->name()] =& $class;
+		$this->_classes[$class->name()] = $class;
 	}
 
 	/** Add a global to this package.
@@ -230,4 +231,4 @@ class PackageDoc extends Doc
 
 }
 
-?>
+

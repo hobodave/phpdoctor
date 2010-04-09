@@ -102,11 +102,11 @@ class Type
 	 *
 	 * @return ClassDoc A classDoc if the type is a class, null if it is a primitive type.
 	 */
-	function &asClassDoc()
+	function asClassDoc()
     {
 		return $this->_root->classNamed($this->_name);
 	}
 
 }
 
-?>
+

@@ -48,9 +48,9 @@ if (!isset($argv[1])) {
     }
 }
 
-$phpdoc =& new phpDoctor($argv[1]);
+$phpdoc = new phpDoctor($argv[1]);
 
-$rootDoc =& $phpdoc->parse();
+$rootDoc = $phpdoc->parse();
 
 $phpdoc->execute($rootDoc);
 

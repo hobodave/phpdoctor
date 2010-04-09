@@ -102,7 +102,7 @@ class ClassWriter extends HTMLWriter
 						echo '<p class="signature">', $class->modifiers(), ' class <strong>', $class->name(), '</strong>';
 					}
 					if ($class->superclass()) {
-						$superclass =& $rootDoc->classNamed($class->superclass());
+						$superclass = $rootDoc->classNamed($class->superclass());
 						if ($superclass) {
 							echo '<br>extends <a href="', str_repeat('../', $this->_depth), $superclass->asPath(), '">', $superclass->name(), "</a>\n\n";
 						} else {
@@ -122,7 +122,7 @@ class ClassWriter extends HTMLWriter
 
 					$fields =& $class->fields();
                     ksort($fields);
-					$constructors =& $class->constructor();
+					$constructors = $class->constructor();
                     ksort($constructors);
 					$methods =& $class->methods();
                     ksort($methods);
@@ -148,7 +148,7 @@ class ClassWriter extends HTMLWriter
 					}
 					
 					if ($class->superclass()) {
-                        $superclass =& $rootDoc->classNamed($class->superclass());
+                        $superclass = $rootDoc->classNamed($class->superclass());
                         if ($superclass) {
                             $this->inheritFields($superclass, $rootDoc, $package);
                         }
@@ -190,7 +190,7 @@ class ClassWriter extends HTMLWriter
 					}
 					
 					if ($class->superclass()) {
-                        $superclass =& $rootDoc->classNamed($class->superclass());
+                        $superclass = $rootDoc->classNamed($class->superclass());
                         if ($superclass) {
                             $this->inheritMethods($superclass, $rootDoc, $package);
                         }
@@ -272,7 +272,7 @@ class ClassWriter extends HTMLWriter
 	 * @param int depth Depth of recursion
 	 * @return mixed[]
 	 */
-	function _buildTree(&$rootDoc, &$class, $depth = NULL)
+	function _buildTree(RootDoc $rootDoc, ClassDoc $class, $depth = NULL)
     {
 		if ($depth === NULL) {
 			$start = TRUE;
@@ -283,7 +283,8 @@ class ClassWriter extends HTMLWriter
 		$output = '';
 		$undefinedClass = FALSE;
 		if ($class->superclass()) {
-			$superclass =& $rootDoc->classNamed($class->superclass());
+		    echo "Class:".$class->_name." - Superclass: ".$class->superClass().PHP_EOL;
+			$superclass = $rootDoc->classNamed($class->superclass());
 			if ($superclass) {
 				$result = $this->_buildTree($rootDoc, $superclass, $depth);
 				$output .= $result[0];
@@ -331,7 +332,7 @@ class ClassWriter extends HTMLWriter
 			echo '</td></tr>';
 			echo "</table>\n\n";
 			if ($element->superclass()) {
-                $superclass =& $rootDoc->classNamed($element->superclass());
+                $superclass = $rootDoc->classNamed($element->superclass());
                 if ($superclass) {
                     $this->inheritFields($superclass, $rootDoc, $package);
                 }
@@ -364,7 +365,7 @@ class ClassWriter extends HTMLWriter
 			echo '</td></tr>';
 			echo "</table>\n\n";
 			if ($element->superclass()) {
-                $superclass =& $rootDoc->classNamed($element->superclass());
+                $superclass = $rootDoc->classNamed($element->superclass());
                 if ($superclass) {
                     $this->inheritMethods($superclass, $rootDoc, $package);
                 }
@@ -374,4 +375,4 @@ class ClassWriter extends HTMLWriter
 
 }
 
-?>
+

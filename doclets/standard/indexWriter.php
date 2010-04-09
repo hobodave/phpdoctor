@@ -94,11 +94,11 @@ class IndexWriter extends HTMLWriter
                     echo '<h1 id="letter', chr($letter), '">', chr($letter), "</h1>\n";
                     echo "<dl>\n";
                 }
-                $parent =& $element->containingClass();
+                $parent = $element->containingClass();
                 if ($parent && strtolower(get_class($parent)) != 'rootdoc') {
                     $in = 'class <a href="'.$parent->asPath().'">'.$parent->qualifiedName().'</a>';
                 } else {
-                    $package =& $element->containingPackage();
+                    $package = $element->containingPackage();
                     $in = 'package <a href="'.$package->asPath().'/package-summary.html">'.$package->name().'</a>';
                 }
                 switch (strtolower(get_class($element))) {
@@ -157,4 +157,4 @@ class IndexWriter extends HTMLWriter
 
 }
 
-?>
+

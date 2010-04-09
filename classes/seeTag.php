@@ -79,7 +79,7 @@ class SeeTag extends Tag
 		}
 		$element =& $this->_resolveLink();
 		if ($element) {
-			$package =& $this->_parent->containingPackage();
+			$package = $this->_parent->containingPackage();
 			$path = str_repeat('../', $package->depth() + 1).$element->asPath();
 			return '<a href="'.$path.'">'.$link.'</a>';
 		} elseif (preg_match('/^(https?|ftp):\/\//', $this->_link) === 1) {
@@ -119,7 +119,7 @@ class SeeTag extends Tag
 			}
 			
 			if ($packageName) { // get package
-				$package =& $this->_root->packageNamed($packageName);
+				$package = $this->_root->packageNamed($packageName);
 			}
 			if ($className) { // get class
 				if (isset($package)) {
@@ -235,10 +235,10 @@ class SeeTag extends Tag
 					if ($classes) {
 						foreach($classes as $key => $class) {
 							if ($class->name() == $elementName) {
-								$element =& $classes[$key];
+								$element = $classes[$key];
 								break;
 							}
-							$constructors =& $class->constructor();
+							$constructors = $class->constructor();
 							if ($constructors) {
 								foreach($constructors as $key => $constructor) {
 									if ($constructor->name() == $elementName) {

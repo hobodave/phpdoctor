@@ -163,12 +163,12 @@ it will return
 	function flatSignature()
     {
 		$signature = '';
-		$myPackage =& $this->containingPackage();
+		$myPackage = $this->containingPackage();
 		foreach($this->_parameters as $param) {
 			$type =& $param->type();
-			$classDoc =& $type->asClassDoc();
+			$classDoc = $type->asClassDoc();
 			if ($classDoc) {
-				$packageDoc =& $classDoc->containingPackage();
+				$packageDoc = $classDoc->containingPackage();
 				$signature .= '<a href="'.str_repeat('../', $myPackage->depth() + 1).$classDoc->asPath().'">'.$classDoc->name().'</a> '.$param->name().', ';
 			} else {
 				$signature .= $type->typeName().' '.$param->name().', ';
@@ -179,4 +179,4 @@ it will return
 
 }
 
-?>
+

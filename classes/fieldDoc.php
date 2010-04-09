@@ -53,7 +53,7 @@ class FieldDoc extends ProgramElementDoc
 		$this->_name = trim($name, '$\'"');
 		$this->_parent =& $parent; // set reference to parent
 		$this->_root =& $root; // set reference to root
-		$this->_type =& new type('mixed', $root);
+		$this->_type = new type('mixed', $root);
 		$this->_filename = $filename;
 		$this->_lineNumber = $lineNumber;
 	}
@@ -105,8 +105,8 @@ class FieldDoc extends ProgramElementDoc
 	 */
 	function typeAsString()
     {
-		$myPackage =& $this->containingPackage();
-		$classDoc =& $this->_type->asClassDoc();
+		$myPackage = $this->containingPackage();
+		$classDoc = $this->_type->asClassDoc();
 		if ($classDoc) {
 			$packageDoc =& $classDoc->containingPackage();
 			return '<a href="'.str_repeat('../', $myPackage->depth() + 1).$classDoc->asPath().'">'.$classDoc->name().$this->_type->dimension().'</a>';

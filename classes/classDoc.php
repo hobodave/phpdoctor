@@ -74,6 +74,8 @@ class ClassDoc extends ProgramElementDoc
 	 */
 	var $_abstract = FALSE;
 	
+	//var $_namespace;
+	
 	/** Constructor
 	 *
 	 * @param str name Name of this element
@@ -81,10 +83,10 @@ class ClassDoc extends ProgramElementDoc
 	 * @param str filename The filename of the source file this element is in
 	 * @param int lineNumber The line number of the source file this element is at
 	 */
-	function classDoc($name, &$root, $filename, $lineNumber)
+	function classDoc($name, RootDoc $root, $filename, $lineNumber)
     {
 		$this->_name = $name;
-		$this->_root =& $root;
+		$this->_root = $root;
 		$this->_filename = $filename;
 		$this->_lineNumber = $lineNumber;
 	}
@@ -93,10 +95,10 @@ class ClassDoc extends ProgramElementDoc
 	 *
 	 * @param FieldDoc field
 	 */
-	function addField(&$field)
+	function addField(FieldDoc $field)
     {
         if (!isset($this->_fields[$field->name()])) {
-            $this->_fields[$field->name()] =& $field;
+            $this->_fields[$field->name()] = $field;
         }
 	}
 
@@ -104,35 +106,35 @@ class ClassDoc extends ProgramElementDoc
 	 *
 	 * @param MethodDoc constructor
 	 */
-	function addConstructor(&$constructor)
+	function addConstructor(MethodDoc $constructor)
     {
         if (isset($this->_constructor[$constructor->name()])) {
-            $phpdoctor =& $this->_root->phpdoctor();
+            $phpdoctor = $this->_root->phpdoctor();
             echo "\n";
             $phpdoctor->warning('Found constructor '.$constructor->name().' again, overwriting previous version');
         }
-		$this->_constructor[$constructor->name()] =& $constructor;
+		$this->_constructor[$constructor->name()] = $constructor;
 	}
 
 	/** Add a method to this class.
 	 *
 	 * @param MethodDoc method
 	 */
-	function addMethod(&$method)
+	function addMethod(MethodDoc $method)
     {
         if (isset($this->_methods[$method->name()])) {
-            $phpdoctor =& $this->_root->phpdoctor();
+            $phpdoctor = $this->_root->phpdoctor();
             echo "\n";
             $phpdoctor->warning('Found method '.$method->name().' again, overwriting previous version');
         }
-		$this->_methods[$method->name()] =& $method;
+		$this->_methods[$method->name()] = $method;
 	}
 	
 	/** Return the constructor for this class.
 	 *
 	 * @return ConstructorDoc
 	 */
-	function &constructor()
+	function constructor()
     {
 		return $this->_constructor;
 	}
@@ -172,11 +174,11 @@ class ClassDoc extends ProgramElementDoc
 	 *
 	 * @return MethodDoc
 	 */
-	function &methodNamed($methodName)
+	function methodNamed($methodName)
     {
         $return = NULL;
         if (isset($this->_methods[$methodName])) {
-            $return =& $this->_methods[$methodName];
+            $return = $this->_methods[$methodName];
         }
         return $return;
 	}
@@ -290,7 +292,7 @@ class ClassDoc extends ProgramElementDoc
             $superClassName = $this->superclass();
         }
         if ($superClassName) {
-           $parent =& $this->_root->classNamed($superClassName);
+           $parent = $this->_root->classNamed($superClassName);
            if ($parent->superclass()) { // merge parents superclass data first by recursing
                $this->mergeSuperClassData($parent->superclass());
            }
@@ -320,12 +322,12 @@ class ClassDoc extends ProgramElementDoc
             
             // merge method data
             $methods =& $this->methods();
-            $constructor =& $this->constructor();
+            $constructor = $this->constructor();
             if (is_object($constructor)) {
                 $methods = array_merge(array($constructor->name() => $constructor), $methods);
             }
             foreach ($methods as $name => $method) {
-                $parentMethod =& $parent->methodNamed($name);
+                $parentMethod = $parent->methodNamed($name);
                 if ($parentMethod) {
                     // tags
                     $tags =& $parentMethod->tags();
@@ -353,7 +355,7 @@ class ClassDoc extends ProgramElementDoc
                         if (!isset($methods[$name]->_parameters[$paramName]) || $type->typeName() == 'mixed') {
                             $phpdoctor->verbose('> Merging method '.$this->name().':'.$name.' with parameter '.$paramName.' from parent '.$parent->name().':'.$parentMethod->name());
                             $paramType =& $param->type();
-                            $methods[$name]->_parameters[$paramName] =& new fieldDoc($paramName, $methods[$name], $this->_root);
+                            $methods[$name]->_parameters[$paramName] = new fieldDoc($paramName, $methods[$name], $this->_root);
                             $methods[$name]->_parameters[$paramName]->set('type', new type($paramType->typeName(), $this->_root));
                         }
                     }
@@ -377,4 +379,4 @@ class ClassDoc extends ProgramElementDoc
 
 }
 
-?>
+

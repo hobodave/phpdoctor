@@ -132,34 +132,34 @@ class Standard
 		if (isset($options['tree'])) $this->_tree = $options['tree'];
 		
 		// write frame
-		$frameOutputWriter =& new frameOutputWriter($this);
+		$frameOutputWriter = new frameOutputWriter($this);
 
 		// write overview summary
-		$packageIndexWriter =& new packageIndexWriter($this);
+		$packageIndexWriter = new packageIndexWriter($this);
 
 		// write package overview frame
-		$packageIndexFrameWriter =& new packageIndexFrameWriter($this);
+		$packageIndexFrameWriter = new packageIndexFrameWriter($this);
 
 		// write package summaries
-		$packageWriter =& new packageWriter($this);
+		$packageWriter = new packageWriter($this);
 		
 		// write package frame
-		$packageFrameWriter =& new packageFrameWriter($this);
+		$packageFrameWriter = new packageFrameWriter($this);
         
 		// write classes
-		$classWriter =& new classWriter($this);
+		$classWriter = new classWriter($this);
 		
 		// write global functions
-		$functionWriter =& new functionWriter($this);
+		$functionWriter = new functionWriter($this);
 		
 		// write global variables
-		$globalWriter =& new globalWriter($this);
+		$globalWriter = new globalWriter($this);
 
 		// write index
-		$indexWriter =& new indexWriter($this);
+		$indexWriter = new indexWriter($this);
         
 		// write deprecated index
-		$deprecatedWriter =& new deprecatedWriter($this);
+		$deprecatedWriter = new deprecatedWriter($this);
 		
 		// copy stylesheet
 		$phpdoctor->message('Copying stylesheet');

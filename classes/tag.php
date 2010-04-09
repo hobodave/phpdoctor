@@ -201,7 +201,7 @@ class Tag
 					$text = $tag;
 				}
 				$data = NULL;
-				$inlineTag =& $phpdoctor->createTag($name, $text, $data, $this->_root);
+				$inlineTag = $phpdoctor->createTag($name, $text, $data, $this->_root);
 				$inlineTag->setParent($this->_parent);
 				$inlineTags[] = $inlineTag;
 			}

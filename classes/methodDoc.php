@@ -53,7 +53,7 @@ class MethodDoc extends ExecutableDoc
 		$this->_name = $name;
 		$this->_parent =& $parent; // set reference to parent
 		$this->_root =& $root; // set reference to root
-		$this->_returnType =& new type('void', $root);
+		$this->_returnType = new type('void', $root);
 		$this->_filename = $filename;
 		$this->_lineNumber = $lineNumber;
 	}
@@ -83,10 +83,10 @@ class MethodDoc extends ExecutableDoc
 	 */
 	function returnTypeAsString()
     {
-		$myPackage =& $this->containingPackage();
-		$classDoc =& $this->_returnType->asClassDoc();
+		$myPackage = $this->containingPackage();
+		$classDoc = $this->_returnType->asClassDoc();
 		if ($classDoc) {
-			$packageDoc =& $classDoc->containingPackage();
+			$packageDoc = $classDoc->containingPackage();
             return '<a href="'.str_repeat('../', $myPackage->depth() + 1).$classDoc->asPath().'">'.$classDoc->name().$this->_returnType->dimension().'</a>';
 		} else {
 			return $this->_returnType->typeName().$this->_returnType->dimension();

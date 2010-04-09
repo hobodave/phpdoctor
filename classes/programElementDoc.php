@@ -96,11 +96,11 @@ class ProgramElementDoc extends Doc
 	 *
 	 * @return ClassDoc
 	 */
-	function &containingClass()
+	function containingClass()
     {
         $return = NULL;
         if (strtolower(get_class($this->_parent)) == 'classdoc') {
-            $return =& $this->_parent;
+            $return = $this->_parent;
         }
         return $return;
 	}
@@ -109,7 +109,7 @@ class ProgramElementDoc extends Doc
 	 *
 	 * @return PackageDoc
 	 */
-	function &containingPackage()
+	function containingPackage()
     {
 		return $this->_root->packageNamed($this->_package);
 	}
@@ -133,7 +133,7 @@ for the method bar() in class Foo in the package Baz, return:
 	 */
 	function qualifiedName()
     {
-		$parent =& $this->containingClass();
+		$parent = $this->containingClass();
 		if ($parent && $parent->name() != '' && $this->_package != $parent->name()) {
 			return $this->_package.'.'.$parent->name().'.'.$this->_name;
 		} else {
@@ -244,14 +244,14 @@ modifiers() would return:
 		if ($this->isClass() || $this->isInterface() || $this->isException()) {
 			return strtolower(str_replace('.', '/', str_replace('\\', '/', $this->_package)).'/'.$this->_name.'.html');
 		} elseif ($this->isField()) {
-			$class =& $this->containingClass();
+			$class = $this->containingClass();
 			if ($class) {
 				return strtolower(str_replace('.', '/', str_replace('\\', '/', $this->_package)).'/'.$class->name().'.html#').$this->_name;
 			} else {
 				return strtolower(str_replace('.', '/', str_replace('\\', '/', $this->_package)).'/package-globals.html#').$this->_name;
 			}
 		} elseif ($this->isConstructor() || $this->isMethod()) {
-			$class =& $this->containingClass();
+			$class = $this->containingClass();
 			if ($class) {
 				return strtolower(str_replace('.', '/', str_replace('\\', '/', $this->_package)).'/'.$class->name().'.html#').$this->_name.'()';
 			} else {
@@ -267,4 +267,4 @@ modifiers() would return:
 
 }
 
-?>
+

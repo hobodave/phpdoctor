@@ -117,7 +117,7 @@ class RootDoc extends Doc
 			$packageClasses = $this->_packages[$name]->allClasses(); // not by reference so as not to move the internal array pointer
 			if ($packageClasses) {
 				foreach ($packageClasses as $key => $pack) {
-					$classes[$name.'.'.$key] =& $packageClasses[$key];
+					$classes[$name.'.'.$key] = $packageClasses[$key];
 				}
 			}
 		}
@@ -172,15 +172,15 @@ class RootDoc extends Doc
 	 * @param bool create Create package if it does not exist
 	 * @return PackageDoc
 	 */
-	function &packageNamed($name, $create = FALSE)
+	function packageNamed($name, $create = FALSE)
     {
         $return = NULL;
 		if (isset($this->_packages[$name])) {
-			$return =& $this->_packages[$name];
+			$return = $this->_packages[$name];
 		} elseif ($create) {
-			$newPackage =& new packageDoc($name, $this);
+			$newPackage = new packageDoc($name, $this);
 			$this->addPackage($newPackage);
-			$return =& $newPackage;
+			$return = $newPackage;
 		}
         return $return;
 	}
@@ -190,11 +190,11 @@ class RootDoc extends Doc
 	 * @param str name Class name
 	 * @return ClassDoc
 	 */
-	function &classNamed($name)
+	function classNamed($name)
     {
 		$packages = $this->_packages; // we do this copy so as not to upset the internal pointer of the array outside this scope
 		foreach($packages as $packageName => $package) {
-			$class =& $package->findClass($name);
+			$class = $package->findClass($name);
 			if ($class != NULL) break;
 		}
 		return $class;
