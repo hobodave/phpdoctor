@@ -40,8 +40,8 @@ class ClassWriter extends HTMLWriter
 		
 		$this->_id = 'definition';
 
-		$rootDoc =& $this->_doclet->rootDoc();
-		$phpdoctor =& $this->_doclet->phpdoctor();
+		$rootDoc = $this->_doclet->rootDoc();
+		$phpdoctor = $this->_doclet->phpdoctor();
 		
 		$packages =& $rootDoc->packages();
         ksort($packages);

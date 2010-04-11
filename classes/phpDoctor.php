@@ -1140,9 +1140,6 @@ class PHPDoctor
 			}
 			if ($name) {
 				switch ($name) {
-				case 'package': // place current element in package
-				//	$data['package'] = $text;
-					break;
 				case 'var': // set variable type
 					$data['type'] = $text;
 					break;

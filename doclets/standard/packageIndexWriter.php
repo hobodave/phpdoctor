@@ -66,7 +66,7 @@ class PackageIndexWriter extends HTMLWriter
 		}
 
 		echo '<table class="title">'."\n";
-		echo '<tr><th colspan="2" class="title">Packages</th></tr>'."\n";
+		echo '<tr><th colspan="2" class="title">Namespaces</th></tr>'."\n";
         $packages =& $rootDoc->packages();
         ksort($packages);
 		foreach($packages as $name => $package) {
